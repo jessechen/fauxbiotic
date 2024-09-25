@@ -2,12 +2,12 @@
 
 ## Continuous Game of Life variation
 
-One sentence of background information goes here.
+Still just messing around with shaders, idk lol
 
 Production
 ----------
 
-~~[GitHub Pages](https://jessechen.github.io/fauxbiotic/)~~
+[GitHub Pages](https://jessechen.github.io/fauxbiotic/)
 
 Prior Art
 ---------
