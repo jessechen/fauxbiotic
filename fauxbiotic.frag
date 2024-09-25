@@ -13,6 +13,8 @@ vec3 hslToRgb(vec3 channels, vec2 coords) {
 
 void main() {
 	vec2 coords = gl_FragCoord.xy/u_resolution;
-    vec3 color = hslToRgb(vec3(0.0, 8.0, 4.0), coords);
+    float phase = fract(u_time / 5.0);
+    float x = fract(coords.x + phase);
+    vec3 color = hslToRgb(vec3(0.0, 8.0, 4.0), vec2(x, coords.y));
     gl_FragColor = vec4(color, 1.0);
 }
