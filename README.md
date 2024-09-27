@@ -1,6 +1,6 @@
 # Fauxbiotic
 
-## SmoothLifeL implementation in WebGL
+## SmoothLifeL implemented in WebGL
 
 Still just messing around with shaders, idk lol
 
@@ -30,6 +30,10 @@ Prior Art
   * α<sub>m</sub> = 0.147
   * dt = 0.05
 
+* Blogpost with a much better explanation than the original paper: [Conway’s Game of Life for Curved Surfaces by Mikola Lysenko](https://0fps.net/2012/11/19/conways-game-of-life-for-curved-surfaces-part-1/) (2012)
+
+* Original Game of Life in a fragment shader: [A GPU Approach to Conway's Game of Life by Chris Wellons](https://nullprogram.com/blog/2014/06/10/) (2014)
+
 * Interactive demo: [SmoothLife(L) Shadertoy by chronos](https://www.shadertoy.com/view/XtdSDn) (2017)
   * r<sub>a</sub> = 10
   * r<sub>b</sub> = 3
@@ -38,8 +42,6 @@ Prior Art
   * α<sub>n</sub> = 0.028
   * α<sub>m</sub> = 0.147
   * dt = 0.30
-
-* Original Game of Life in a fragment shader: [A GPU Approach to Conway's Game of Life by Chris Wellons](https://nullprogram.com/blog/2014/06/10/) (2014)
 
 Setup
 -----
