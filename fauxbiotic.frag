@@ -6,7 +6,7 @@ uniform vec2 u_resolution;
 uniform float u_time;
 
 uniform sampler2D u_buffer0;
-uniform sampler2D u_tex0; // data/moon.jpg
+uniform sampler2D u_tex0; // data/cellnoise.png
 
 
 //Conventions:
@@ -35,16 +35,6 @@ const float d2 = 0.549;
 
 const float alpha_n = 0.028;
 const float alpha_m = 0.147;
-/*------------------------------*/
-
-// 1 out, 3 in... <https://www.shadertoy.com/view/4djSRW>
-#define MOD3 vec3(.1031,.11369,.13787)
-float hash13(vec3 p3) {
-	p3 = fract(p3 * MOD3);
-    p3 += dot(p3, p3.yzx+19.19);
-    return fract((p3.x + p3.y)*p3.z);
-}
-
 
 /* ---------------- Sigmoid functions ------------------------------------ */
 
@@ -135,7 +125,7 @@ void main() {
     
     // Set initial conditions. TODO: Move to function / cleanup
     if(u_time < 0.1) {
-        color = vec3(hash13(vec3(gl_FragCoord.xy, u_time)) - texture2D(u_tex0, coords).x + 0.5);
+        color = texture2D(u_tex0, coords).xyz;
     }
 
 	gl_FragColor = vec4(color, 1.0);
