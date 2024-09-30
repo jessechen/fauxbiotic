@@ -6,18 +6,11 @@ uniform vec2 u_resolution;
 uniform float u_time;
 
 uniform sampler2D u_buffer0;
-uniform sampler2D u_tex0; // data/cellnoise.png
 
-
-//Conventions:
+// Conventions:
 // x component = outer radius / ring
 // y component = inner radius / disk
-/*
-   _
- /   \
-|  O  |
- \ _ /
-*/
+
 const float PI = 3.14159265;
 const float dt = 0.30;
 
@@ -35,6 +28,12 @@ const float d2 = 0.549;
 
 const float alpha_n = 0.028;
 const float alpha_m = 0.147;
+
+float random (vec2 st) {
+    return fract(sin(dot(st.xy,
+                         vec2(12.9898,78.233)))*
+        43758.5453123);
+}
 
 /* ---------------- Sigmoid functions ------------------------------------ */
 
@@ -97,12 +96,6 @@ vec2 convolve(vec2 uv) {
     return result;
 }
 
-vec3 hslToRgb(vec3 channels, vec2 coords) {
-    vec3 k = mod(channels + (coords.x * 12.0), 12.0);
-    float a = 1.0 * min(coords.y, 1.0 - coords.y);
-    return coords.y - a * clamp(min(k - 3.0, 9.0 - k), -1.0, 1.0);
-}
-
 void main() {
 	vec2 coords = gl_FragCoord.xy / u_resolution.xy;
     vec3 diff = vec3( vec2(1.0) / u_resolution.xy, 0.0);
@@ -114,9 +107,7 @@ void main() {
     // Compute inner disk and outer ring area.
     vec2 area = PI * r * r;
     area.x -= area.y;
-    /* -------------------------------------*/
     
-    // TODO: Cleanup.
     color = texture2D(u_buffer0, coords).xyz;
     vec2 normalized_convolution = convolve(coords.xy).xy / area;
     color.x = color.x + dt * (2.0 * transition_function(normalized_convolution) - 1.0);
@@ -124,8 +115,8 @@ void main() {
     color = clamp(color, 0.0, 1.0);
     
     // Set initial conditions. TODO: Move to function / cleanup
-    if(u_time < 0.1) {
-        color = texture2D(u_tex0, coords).xyz;
+    if(u_time < 0.05) {
+        color = vec3(random(coords));
     }
 
 	gl_FragColor = vec4(color, 1.0);
