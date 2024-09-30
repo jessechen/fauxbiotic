@@ -98,25 +98,24 @@ vec2 convolve(vec2 uv) {
 
 void main() {
 	vec2 coords = gl_FragCoord.xy / u_resolution.xy;
-    vec3 diff = vec3( vec2(1.0) / u_resolution.xy, 0.0);
 
 #if defined( BUFFER_0 )
     // Buffer
     vec3 color = vec3(0.0);
     
-    // Compute inner disk and outer ring area.
-    vec2 area = PI * r * r;
-    area.x -= area.y;
-    
-    color = texture2D(u_buffer0, coords).xyz;
-    vec2 normalized_convolution = convolve(coords.xy).xy / area;
-    color.x = color.x + dt * (2.0 * transition_function(normalized_convolution) - 1.0);
-    color.yz = normalized_convolution;
-    color = clamp(color, 0.0, 1.0);
-    
-    // Set initial conditions. TODO: Move to function / cleanup
+    // Initial conditions
     if(u_time < 0.05) {
         color = vec3(random(coords));
+    } else {
+        // r.x is the outer circle, r.y is the inner disk
+        // area.x is the outer ring, area.y is the inner disk
+        vec2 area = PI * r * r;
+        area.x -= area.y;
+        
+        vec2 normalized_convolution = convolve(coords).xy / area;
+        color.x = texture2D(u_buffer0, coords).x + dt * (2.0 * transition_function(normalized_convolution) - 1.0);
+        color.yz = normalized_convolution;
+        color = clamp(color, 0.0, 1.0);
     }
 
 	gl_FragColor = vec4(color, 1.0);
