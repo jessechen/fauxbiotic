@@ -14,10 +14,6 @@ uniform sampler2D u_buffer0;
 const float PI = 3.14159265;
 const float dt = 0.30;
 
-const vec3 CellColor = vec3(0.2, 0.2, 0.2);
-const vec3 RingColor = vec3(0.0, 0.2, 0.2);
-const vec3 DiskColor = vec3(0.0, 0.0, 0.0);
-
 const vec2 r = vec2(10.0, 3.0);
 
 // SmoothLifeL rules
@@ -122,14 +118,8 @@ void main() {
 
 #else
     // This is the output image
-    vec4 buffer = texture2D(u_buffer0, coords);
-    
-    vec3 color = buffer.x * CellColor + buffer.y * RingColor + buffer.z * DiskColor;
-    
-    float c = 1.0 - buffer.z;
-    float c2 = 1.0 - texture2D(u_buffer0, coords + 0.5/u_resolution).y;
-    color += vec3(0.6, 0.85, 1.0)*max(c2*c2 - c*c, 0.0)*4.0;
-    
+    vec3 color = vec3(texture2D(u_buffer0, coords).x);
+
 	gl_FragColor = vec4(color, 1.0);
 
 #endif
