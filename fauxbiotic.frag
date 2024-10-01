@@ -66,9 +66,6 @@ float ramp_step(float steppos, float t) {
     return clamp(t-steppos+0.5, 0.0, 1.0);
 }
 
-// unnecessary
-vec2 wrap(vec2 position) { return fract(position); }
-
 // Computes both inner and outer integrals
 // TODO: Optimize. Much redundant computation. Most expensive part of program.
 vec2 convolve(vec2 uv) {
@@ -78,7 +75,7 @@ vec2 convolve(vec2 uv) {
             vec2 d = vec2(dx, dy);
             float dist = length(d);
             vec2 offset = d / u_resolution;
-            vec2 samplepos = wrap(uv + offset);
+            vec2 samplepos = fract(uv + offset);
             //if(dist <= r.y + 1.0) {
                 float weight = texture2D(u_buffer0, samplepos).x;
             	result.x += weight * ramp_step(r.y, dist) * (1.0-ramp_step(r.x, dist));	
@@ -108,9 +105,8 @@ void main() {
         // area.x is the outer ring, area.y is the inner disk
         vec2 area = PI * r * r;
         area.x -= area.y;
-        vec2 normalized_convolution = convolve(coords).xy / area;
+        vec2 normalized_convolution = convolve(coords) / area;
         color.x = texture2D(u_buffer0, coords).x + dt * (2.0 * transition_function(normalized_convolution) - 1.0);
-        color.yz = normalized_convolution;
         color = clamp(color, 0.0, 1.0);
     }
 
@@ -123,5 +119,4 @@ void main() {
 	gl_FragColor = vec4(color, 1.0);
 
 #endif
-
 }
