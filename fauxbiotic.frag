@@ -81,7 +81,7 @@ vec2 convolve(vec2 uv) {
         for (float dy = -r.x; dy <= r.x; dy++) {
             vec2 d = vec2(dx, dy);
             float dist = length(d);
-            vec2 offset = d / u_resolution.xy;
+            vec2 offset = d / u_resolution;
             vec2 samplepos = wrap(uv + offset);
             //if(dist <= r.y + 1.0) {
                 float weight = texture2D(u_buffer0, samplepos).x;
@@ -97,21 +97,21 @@ vec2 convolve(vec2 uv) {
 }
 
 void main() {
-	vec2 coords = gl_FragCoord.xy / u_resolution.xy;
+	vec2 coords = gl_FragCoord.xy / u_resolution;
 
 #if defined( BUFFER_0 )
-    // Buffer
+    // This is the texture buffer
     vec3 color = vec3(0.0);
     
-    // Initial conditions
     if(u_time < 0.05) {
+        // Initial conditions
         color = vec3(random(coords));
+
     } else {
         // r.x is the outer circle, r.y is the inner disk
         // area.x is the outer ring, area.y is the inner disk
         vec2 area = PI * r * r;
         area.x -= area.y;
-        
         vec2 normalized_convolution = convolve(coords).xy / area;
         color.x = texture2D(u_buffer0, coords).x + dt * (2.0 * transition_function(normalized_convolution) - 1.0);
         color.yz = normalized_convolution;
@@ -121,14 +121,14 @@ void main() {
 	gl_FragColor = vec4(color, 1.0);
 
 #else
-    // Image
+    // This is the output image
     vec4 buffer = texture2D(u_buffer0, coords);
     
-    vec3 color = 1.0*(buffer.x * CellColor + buffer.y * RingColor + buffer.z * DiskColor);
+    vec3 color = buffer.x * CellColor + buffer.y * RingColor + buffer.z * DiskColor;
     
     float c = 1.0 - buffer.z;
-    float c2 = 1. - texture2D(u_buffer0, coords + .5/u_resolution.xy).y;
-    color += vec3(.6, .85, 1.)*max(c2*c2 - c*c, 0.)*4.;
+    float c2 = 1.0 - texture2D(u_buffer0, coords + 0.5/u_resolution).y;
+    color += vec3(0.6, 0.85, 1.0)*max(c2*c2 - c*c, 0.0)*4.0;
     
 	gl_FragColor = vec4(color, 1.0);
 
