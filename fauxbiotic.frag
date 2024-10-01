@@ -22,7 +22,7 @@ const float d2 = 0.549;
 const float alpha_n = 0.028;
 const float alpha_m = 0.147;
 
-float random (vec2 coords) {
+float random(vec2 coords) {
     return fract(sin(dot(coords.xy,
                          vec2(12.9898,78.233)))*
         43758.5453123);
@@ -47,22 +47,23 @@ float transition_function(vec2 disk_ring) {
 }
 
 // unnecessary (?)
-float ramp_step(float steppos, float t) {
-    return clamp(t-steppos+0.5, 0.0, 1.0);
+float ramp_step(float radius, float dist) {
+    return clamp(0.5 + dist - radius, 0.0, 1.0);
 }
 
 // Computes both inner and outer integrals
 // TODO: Optimize. Much redundant computation. Most expensive part of program.
-vec2 convolve(vec2 uv) {
+vec2 convolve(vec2 coords) {
+    // result.x is the disk weight
+    // result.y is the ring weight
     vec2 result = vec2(0.0);
     for (float dx = -r.x; dx <= r.x; dx++) {
         for (float dy = -r.x; dy <= r.x; dy++) {
             vec2 d = vec2(dx, dy);
             float dist = length(d);
-            vec2 offset = d / u_resolution;
-            vec2 samplepos = fract(uv + offset);
+            vec2 buffer_coords = fract(coords + d / u_resolution);
             //if(dist <= r.y + 1.0) {
-                float weight = texture2D(u_buffer0, samplepos).x;
+                float weight = texture2D(u_buffer0, buffer_coords).x;
             	result.x += weight * ramp_step(r.y, dist) * (1.0-ramp_step(r.x, dist));	
             	
             //} else if(dist <= r.x + 1.) {
