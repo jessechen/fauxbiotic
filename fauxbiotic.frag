@@ -15,50 +15,35 @@ const float PI = 3.14159265;
 const float dt = 0.30;
 
 const vec2 r = vec2(20.0, 20.0 / 3.0);
-
-// SmoothLifeL rules
 const float b1 = 0.257;
 const float b2 = 0.336;
 const float d1 = 0.365;
 const float d2 = 0.549;
-
 const float alpha_n = 0.028;
 const float alpha_m = 0.147;
 
-float random (vec2 st) {
-    return fract(sin(dot(st.xy,
+float random (vec2 coords) {
+    return fract(sin(dot(coords.xy,
                          vec2(12.9898,78.233)))*
         43758.5453123);
 }
 
-/* ---------------- Sigmoid functions ------------------------------------ */
-
-// TODO: reduce unnecessary parameters (remove arguments, use global consts)
-
-float sigmoid_a(float x, float a, float b) {
-    return 1.0 / (1.0 + exp(-(x - a) * 4.0 / b));
+float logistic(float x, float a, float alpha) {
+    return 1.0 / (1.0 + exp(-(x - a) * 4.0 / alpha));
 }
 
-// unnecessary 
-float sigmoid_b(float x, float b, float eb) {
-    return 1.0 - sigmoid_a(x, b, eb);
+float is_between(float x, float min, float max) {
+    return logistic(x, min, alpha_n) * (1.0 - logistic(x, max, alpha_n));
 }
 
-float sigmoid_ab(float x, float a, float b, float ea, float eb) {
-    return sigmoid_a(x, a, ea) * sigmoid_b(x, b, eb);
+float dead_or_alive(float x, float dead, float alive) {
+    return dead * (1.0 - logistic(x, 0.5, alpha_m)) + alive * logistic(x, 0.5, alpha_m);
 }
 
-float sigmoid_mix(float x, float y, float m, float em) {
-    return x * (1.0 - sigmoid_a(m, 0.5, em)) + y * sigmoid_a(m, 0.5, em);
-}
-
-/* ----------------------------------------------------------------------- */
-
-// SmoothLifeL
 float transition_function(vec2 disk_ring) {
-    return sigmoid_mix(sigmoid_ab(disk_ring.x, b1, b2, alpha_n, alpha_n),
-                       sigmoid_ab(disk_ring.x, d1, d2, alpha_n, alpha_n), disk_ring.y, alpha_m
-                      );
+    return dead_or_alive(disk_ring.y,
+        is_between(disk_ring.x, b1, b2),
+        is_between(disk_ring.x, d1, d2));
 }
 
 // unnecessary (?)
