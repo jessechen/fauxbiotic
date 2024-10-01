@@ -8,8 +8,8 @@ uniform float u_time;
 uniform sampler2D u_buffer0;
 
 // Conventions:
-// x component = outer radius / ring
-// y component = inner radius / disk
+// x component = ring
+// y component = disk
 
 const float PI = 3.14159265;
 const float dt = 0.30;
@@ -83,23 +83,17 @@ void main() {
     vec3 color = vec3(0.0);
     
     if(u_time < 0.05) {
-        // Initial conditions
         color = vec3(random(coords));
-
     } else {
-        // r.x is the outer circle, r.y is the inner disk
-        // area.x is the outer ring, area.y is the inner disk
         color.x = texture2D(u_buffer0, coords).x +
             dt * (2.0 * transition_function(convolve(coords)) - 1.0);
         color = clamp(color, 0.0, 1.0);
     }
-
 	gl_FragColor = vec4(color, 1.0);
 
 #else
     // This is the output image
     vec3 color = vec3(texture2D(u_buffer0, coords).x);
-
 	gl_FragColor = vec4(color, 1.0);
 
 #endif
