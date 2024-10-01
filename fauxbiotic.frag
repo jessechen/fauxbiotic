@@ -14,7 +14,7 @@ uniform sampler2D u_buffer0;
 const float PI = 3.14159265;
 const float dt = 0.30;
 
-const vec2 r = vec2(10.0, 3.0);
+const vec2 r = vec2(20.0, 20.0 / 3.0);
 
 // SmoothLifeL rules
 const float b1 = 0.257;
