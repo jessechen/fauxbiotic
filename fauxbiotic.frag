@@ -11,7 +11,8 @@ uniform sampler2D u_buffer0;
 // x component = ring
 // y component = disk
 
-const float PI = 3.14159265;
+const float PI = 3.14159;
+const float E = 2.71828;
 const float dt = 0.30;
 
 const vec2 r = vec2(21.0, 7.0);
@@ -48,16 +49,6 @@ float transition_function(vec2 neighbors) {
         is_between(neighbors.x, d1, d2));
 }
 
-float lerp(float min, float max, float val) {
-    if (val < min) {
-        return 1.0;
-    } else if (val > max) {
-        return 0.0;
-    } else {
-        return (val - min) / (max - min);
-    }
-}
-
 vec2 convolve(vec2 coords) {
     // result.x is the ring weight
     // result.y is the disk weight
@@ -68,8 +59,8 @@ vec2 convolve(vec2 coords) {
             float dist = length(offset);
             vec2 buffer_pos = fract(coords + offset / u_resolution);
             float weight = texture2D(u_buffer0, buffer_pos).x;
-            result.x += weight * (1.0 - lerp(r.y - 0.5, r.y + 0.5, dist)) * lerp(r.x - 0.5, r.x + 0.5, dist);	
-            result.y += weight * lerp(r.y - 0.5, r.y + 0.5, dist);
+            result.x += weight * logistic(dist, r.y, E) * (1.0 - logistic(dist, r.x, E));
+            result.y += weight * (1.0 - logistic(dist, r.y, E));
         }
     }
     return result / areas;
