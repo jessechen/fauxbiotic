@@ -37,7 +37,7 @@ Prior Art
   * 0.267 ≤ d ≤ 0.445
   * α<sub>n</sub> = 0.028
   * α<sub>m</sub> = 0.147
-  * dt = 0.05
+  * dt = ε
 
 * Original Game of Life in a fragment shader: [A GPU Approach to Conway's Game of Life by Chris Wellons](https://nullprogram.com/blog/2014/06/10/) (2014)
 

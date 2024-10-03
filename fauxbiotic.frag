@@ -13,17 +13,19 @@ uniform sampler2D u_buffer0;
 
 const float PI = 3.14159;
 const float E = 2.71828;
-const float dt = 0.30;
 
-const vec2 r = vec2(21.0, 7.0);
-const vec2 areas = vec2(PI * r.x * r.x - PI * r.y * r.y, PI * r.y * r.y);
-
+const float r_a = 21.0;
+const float r_b = 7.0;
 const float b1 = 0.257;
 const float b2 = 0.336;
 const float d1 = 0.365;
 const float d2 = 0.549;
 const float alpha_n = 0.028;
 const float alpha_m = 0.147;
+const float dt = 0.30;
+
+const float area_a = PI * r_a * r_a - PI * r_b * r_b;
+const float area_b = PI * r_b * r_b;
 
 float random(vec2 coords) {
     return fract(sin(dot(coords.xy,
@@ -53,17 +55,17 @@ vec2 convolve(vec2 coords) {
     // result.x is the ring weight
     // result.y is the disk weight
     vec2 result = vec2(0.0);
-    for (float dx = -r.x; dx <= r.x; dx++) {
-        for (float dy = -r.x; dy <= r.x; dy++) {
+    for (float dx = -r_a; dx <= r_a; dx++) {
+        for (float dy = -r_a; dy <= r_a; dy++) {
             vec2 offset = vec2(dx, dy);
             float dist = length(offset);
             vec2 buffer_pos = fract(coords + offset / u_resolution);
             float weight = texture2D(u_buffer0, buffer_pos).x;
-            result.x += weight * logistic(dist, r.y, E) * (1.0 - logistic(dist, r.x, E));
-            result.y += weight * (1.0 - logistic(dist, r.y, E));
+            result.x += weight * logistic(dist, r_b, E) * (1.0 - logistic(dist, r_a, E));
+            result.y += weight * (1.0 - logistic(dist, r_b, E));
         }
     }
-    return result / areas;
+    return result / vec2(area_a, area_b);
 }
 
 void main() {
