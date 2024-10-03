@@ -7,10 +7,6 @@ uniform float u_time;
 
 uniform sampler2D u_buffer0;
 
-// Conventions:
-// x component = ring
-// y component = disk
-
 const float PI = 3.14159;
 const float E = 2.71828;
 
@@ -27,10 +23,8 @@ const float dt = 0.30;
 const float area_a = PI * r_a * r_a - PI * r_b * r_b;
 const float area_b = PI * r_b * r_b;
 
-float random(vec2 coords) {
-    return fract(sin(dot(coords.xy,
-                         vec2(12.9898,78.233)))*
-        43758.5453123);
+float rand(vec2 coords) {
+    return fract(sin(dot(coords, vec2(12.9898,78.233))) * 43758.5453);
 }
 
 float logistic(float x, float a, float alpha) {
@@ -75,8 +69,8 @@ void main() {
     // This is the texture buffer
     vec3 color = vec3(0.0);
     
-    if(u_time < 0.05) {
-        color = vec3(random(coords));
+    if(u_time < dt) {
+        color = vec3(rand(coords));
     } else {
         color.x = texture2D(u_buffer0, coords).x +
             dt * (2.0 * transition_function(convolve(coords)) - 1.0);

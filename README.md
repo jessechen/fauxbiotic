@@ -2,7 +2,7 @@
 
 ## SmoothLifeL implemented in WebGL
 
-Still just messing around with shaders, idk lol
+Here's some organic-looking cellular automata that were developed around 2012 but haven't yet made it into the wider consciousness.
 
 Production
 ----------
