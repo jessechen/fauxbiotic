@@ -7,7 +7,7 @@ Here's some organic-looking cellular automata that were developed around 2012 bu
 Production
 ----------
 
-[GitHub Pages](https://jessechen.github.io/fauxbiotic/)
+[GitHub Pages](https://approximateknowledge.net/fauxbiotic)
 
 Prior Art
 ---------
